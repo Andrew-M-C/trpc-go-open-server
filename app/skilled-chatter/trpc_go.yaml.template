@@ -1,0 +1,37 @@
+# trpc_go.yaml
+
+server:
+  filter:
+    # - tracelog
+  service:
+    - name: trpc.open.skilledchatter.Chat
+      # nic: eth0
+      ip: 0.0.0.0
+      port: 8088
+      network: tcp
+      protocol: http
+      # 毫秒。Agent + 工具多轮调用远超 1s；过小会导致 curl 很快结束或失败
+      timeout: 300000
+
+plugins:
+  log:
+    default:
+      - writer: console
+        level: debug
+      - writer: file
+        level: debug
+        writer_config:
+          filename: ./log.log
+          max_size: 10  # 单位：MB
+          max_backups: 10
+          max_age: 7    # 单位：天
+          compress: false
+
+  # LLM：由 main.go 通过 github.com/Andrew-M-C/trpc-go-utils/plugin Bind 读取
+  model:
+    openai:
+      base_url: "https://api.lkeap.cloud.tencent.com/v1"
+      # 勿将真实 key 提交到公开仓库；本地填写或改用私有配置
+      api_key: "YOUR_KEY"
+      model: deepseek-v3.2
+
